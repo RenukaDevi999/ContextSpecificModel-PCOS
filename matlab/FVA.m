@@ -1,0 +1,16 @@
+clear
+function [fva_30n70_normal_minmax,fva_30n70_PCOSnonIR_minmax,fva_30n70_PCOSIR_minmax]=FVA(iMAT_model_normal_30n70_minmax,iMAT_model_PCOSnonIR_30n70_minmax,iMAT_model_PCOSIR_30n70_minmax)
+
+%load iMAT_30n70_minmax.mat
+[fva_30n70_normal_minmax_minflux,fva_30n70_normal_minmax_maxflux]=fluxVariability(iMAT_model_normal_30n70_minmax);
+fva_30n70_normal_minmax=[fva_30n70_normal_minmax_minflux,fva_30n70_normal_minmax_maxflux];
+
+[fva_30n70_PCOSnonIR_minmax_minflux,fva_30n70_PCOSnonIR_minmax_maxflux]=fluxVariability(iMAT_model_PCOSnonIR_30n70_minmax);
+fva_30n70_PCOSnonIR_minmax=[fva_30n70_PCOSnonIR_minmax_minflux,fva_30n70_PCOSnonIR_minmax_maxflux];
+
+[fva_30n70_PCOSIR_minmax_minflux,fva_30n70_PCOSIR_minmax_maxflux]=fluxVariability(iMAT_model_PCOSIR_30n70_minmax);
+fva_30n70_PCOSIR_minmax=[fva_30n70_PCOSIR_minmax_minflux,fva_30n70_PCOSIR_minmax_maxflux];
+%save('fva_30n70_minmax','fva_30n70_normal_minmax','fva_30n70_PCOSnonIR_minmax','fva_30n70_PCOSIR_minmax')
+end
+
+

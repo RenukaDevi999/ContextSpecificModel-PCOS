@@ -1,0 +1,8 @@
+clear
+function [fba_30n70_normal_minmax,fba_30n70_PCOSnonIR_minmax,fba_30n70_PCOSIR_minmax]=FBA(iMAT_model_normal_30n70_minmax,iMAT_model_PCOSnonIR_30n70_minmax,iMAT_model_PCOSIR_30n70_minmax)
+%load iMAT_20n80_minmax.mat
+fba_30n70_normal_minmax=optimizeCbModel(iMAT_model_normal_30n70_minmax);
+fba_30n70_PCOSnonIR_minmax=optimizeCbModel(iMAT_model_PCOSnonIR_30n70_minmax);
+fba_30n70_PCOSIR_minmax=optimizeCbModel(iMAT_model_PCOSIR_30n70_minmax);
+%save('fba_30n70_minmax','fba_30n70_normal_minmax','fba_30n70_PCOSnonIR_minmax','fba_30n70_PCOSIR_minmax')
+end
