@@ -27,108 +27,137 @@ Cobra toolbox and gurobi solver are required to run this file. RECON3DModel_301.
 
 Outputs:
 
-	•	result.mat with vectors:
-	⁃	mets: The standard reaction Gibbs free energy estimates obtained from data reconciliation
-	⁃	genes: The standard formation Gibbs free energy estimates obtained from data reconciliation
-	⁃	rxns: the CIDS corresponding to the compounds for which the modified group contribution method could not provide estimates ( due to insufficient measured data )
-	⁃	f: the RIDS corresponding to the reactions for which  the modified group contribution method could not provide estimates ( due to insufficient measured data )
-	- hellooo
-	⁃	resultCell : all RIDS present in the reaction set
+	•	iMAT_model_normal_30n70_minmax.mat with struct field:
+	⁃	mets: The metabolites of the control model for threshold 30 and 70(default threshold).
+	⁃	genes: The genes involved in the control model for threshold 30 and 70.
+	⁃	rxns: The reactions of the control model for threshold 30 and 70.
+	•	iMAT_model_PCOSnonIR_30n70_minmax.mat with struct field:
+	⁃	mets: The metabolites of the PCOS without insulin resistance disease model for threshold 30 and 70(default threshold).
+	⁃	genes: The genes involved in the PCOS without insulin resistance disease model for threshold 30 and 70.
+	⁃	rxns: The reactions of the PCOS without insulin resistance disease model for threshold 30 and 70.
+	•	iMAT_model_PCOSIR_30n70_minmax.mat with struct field:
+	⁃	mets: The metabolites of the PCOS wit insulin resistance disease model for threshold 30 and 70(default threshold).
+	⁃	genes: The genes involved in the PCOS with insulin resistance disease model for threshold 30 and 70.
+	⁃	rxns: The reactions of the PCOS with insulin resistance disease model for threshold 30 and 70.
 
-File: parseKeggModel.m (&  reaction2sparse.m)
+	•	fba_30n70_normal_minmax.mat with values:
+	⁃	f: The biomass flux of the control for the 'iMAT_model_normal_30n70_minmax' model .
+	•	fba_30n70_PCOSnonIR_minmax.mat with values:
+	⁃	f: The biomass flux of PCOS without insulin resistance disease for the input 'iMAT_model_PCOSnonIR_30n70_minmax' model.
+	•	fba_30n70_PCOSIR_minmax.mat with values:
+	⁃	f: The biomass flux of  PCOS with insulin resistance disease for the  input 'iMAT_model_PCOSIR_30n70_minmax' model.
 
-Parses the reaction file with each line representing a reaction in KEGG format to obtain S, CIDS and RIDS
+	•	fva_30n70_normal_minmax.mat with vector:
+	⁃	minimum and maximum flux of reactions of control model.
+	•	fva_30n70_PCOSnonIR_minmax.mat with vector:
+	⁃	minimum and maximum flux of reactions of PCOS without insulin resistance model.
+	•	fva_30n70_PCOSIR_minmax.mat with vector:
+	⁃	minimum and maximum flux of reactions of PCOS with insulin resistance model.
+
+	•	TableChecks: is a table with 16 fields of test results for a model.
+
+	⁃	resultCell : consists of adjusted P values, reaction subsystems, total set size(number of total reactions), enriched set(total number of differentially expressed reactions) for the input reaction list excel file.
+
+
+File: PCOSmodel1_control.m
+
+Creates context specific model for control, PCOS with/ without insulin resistance using iMAT(default) and GIMME. 
 
 Inputs:
 
-	•	ReactionStrings - cell array of each reaction in KEGG format
-	•	arrow - arrow in the reaction (default is '=')
+	•	T- table with gene expression data for control, PCOS with/without insulin resistance.
+	•   For iMAT models,
+	⁃   lb- lower threshold.
+	⁃   ub- upper threshold.
+	•   For GIMME models,
+	⁃   lb- lower threshold,
+	•   a=1 for iMAT models and a=0 for GIMME models.
+
 
 Outputs:
 
-	•	S - Stoichiometric matrix
-	•	cids - CIDS of all compounds in the reaction set
-	•	rids - RIDS of all compounds in the reaction set
+	•	iMAT_model_normal_30n70_minmax.mat with struct field:
+	⁃	mets: The metabolites of the control model for threshold 30 and 70(default threshold).
+	⁃	genes: The genes involved in the control model for threshold 30 and 70.
+	⁃	rxns: The reactions of the control model for threshold 30 and 70.
+	•	iMAT_model_PCOSnonIR_30n70_minmax.mat with struct field:
+	⁃	mets: The metabolites of the PCOS without insulin resistance disease model for threshold 30 and 70(default threshold).
+	⁃	genes: The genes involved in the PCOS without insulin resistance disease model for threshold 30 and 70.
+	⁃	rxns: The reactions of the PCOS without insulin resistance disease model for threshold 30 and 70.
+	•	iMAT_model_PCOSIR_30n70_minmax.mat with struct field:
+	⁃	mets: The metabolites of the PCOS wit insulin resistance disease model for threshold 30 and 70(default threshold).
+	⁃	genes: The genes involved in the PCOS with insulin resistance disease model for threshold 30 and 70.
+	⁃	rxns: The reactions of the PCOS with insulin resistance disease model for threshold 30 and 70.
 
-File: legendretransformF.m 
 
-Applies the inverse Legendre transform to the transformed formation Gibbs energies. Maxstar.m and transform.m are used to perform the transform. 
+File: sanitychck.m 
+
+Performs model checks like leak test, single deletion functions etc.
 
 Inputs:
- 
-	•	m - number of formation energies
-	•	kegg_pKa - contains the relevant pKa, nH, charge etc information for each compound
-	•	cids_m - CIDS of the formation energies that are to be inverse transformed
-	•	pH - vector containing the pH values for each apparent Gibbs energy of formation measurement.
-	•	T - vector containing the temperature values for each apparent Gibbs energy of formation measurement.
-	•	I - vector containing the ionic strength values for each apparent Gibbs energy of formation measurement.
-	•	dG0f_prime - the transformed Gibbs free energy of formation value that is to be converted to standard form ( or "chemical energy".
+
+	•	model: iMAT_model_PCOSIR_30n70_minmax model(default)
+
 
 Outputs:
 
-	•	dG0 - The measured standard Gibbs free energies of formation obtained after performing the inverse Legendre transform
-	•	reverse_ddG0s - The difference between the standard  transformed ( or apparent) Gibbs free energies of formation and theGibbs free energies of formation.
+	•	TableChecks: is a table with 16 fields of test results for a model.
 
-
-File: legendretransformR.m 
-
-Applies the inverse Legendre transform to the transformed reaction Gibbs energies. Maxstar.m and transform.m are used to perform the transform. 
+File: FBA.m
+Applies flux balance analysis for the context specific models.
 
 Inputs:
-	 
-	•	S - stoichiometric matrix
-	•	kegg_pKa - contains the relevant pKa, nH, charge etc information for each compound
-	•	cids_m - CIDS of the formation energies that are to be inverse transformed
-	•	pH - vector containing the pH values for each apparent Gibbs energy of reaction measurement.
-	•	T - vector containing the temperature values for each apparent Gibbs energy of reaction measurement.
-	•	I - vector containing the ionic strength values for each apparent Gibbs energy of reaction measurement.
-	•	dG0r_prime - the transformed Gibbs free energy of reaction value that is to be converted to standard form 
+
+	•	iMAT_model_normal_30n70_minmax model
+	•	iMAT_model_PCOSnonIR_30n70_minmax model
+	•	iMAT_model_PCOSIR_30n70_minmax model
+
 
 Outputs:
 
-	•	dG0 - The measured standard Gibbs free energies of reaction obtained after performing the inverse Legendre transform
-	•	reverse_ddG0s - The difference between the standard  transformed ( or apparent) Gibbs free energies of reaction and theGibbs free energies of reaction.
+	•	fba_30n70_normal_minmax.mat with values:
+	⁃	f: The biomass flux of the control for the 'iMAT_model_normal_30n70_minmax' model .
+	•	fba_30n70_PCOSnonIR_minmax.mat with values:
+	⁃	f: The biomass flux of PCOS without insulin resistance disease for the input 'iMAT_model_PCOSnonIR_30n70_minmax' model.
+	•	fba_30n70_PCOSIR_minmax.mat with values:
+	⁃	f: The biomass flux of  PCOS with insulin resistance disease for the  input 'iMAT_model_PCOSIR_30n70_minmax' model.
+
+File: FVA.m
+Applies flux variability analysis for the context specific models.
+
+Inputs:
+
+	•	iMAT_model_normal_30n70_minmax model
+	•	iMAT_model_PCOSnonIR_30n70_minmax model
+	•	iMAT_model_PCOSIR_30n70_minmax model
 
 
-File: recon_l.m
+Outputs:
 
-This file is used to perform the linear data reconciliation for Gibbs free energies. It calculates reconciled estimates for all measured Gibbs energies and computes prediction estimates for the unmeasured observable Gibbs energies. If prompted, it imputes the group contribution estimates for the unobservable Gibbs energies. It requires Gibbs free energy measurements, thermodynamic constraints (Stoichiometric matrix S), variance matrix (Sigma) and indices of the measured reaction and formation Gibbs energies corresponding to the columns and rows of S.  
+	•	fva_30n70_normal_minmax.mat with vector:
+	⁃	minimum and maximum flux of reactions of control model.
+	•	fva_30n70_PCOSnonIR_minmax.mat with vector:
+	⁃	minimum and maximum flux of reactions of PCOS without insulin resistance model.
+	•	fva_30n70_PCOSIR_minmax.mat with vector:
+	⁃	minimum and maximum flux of reactions of PCOS with insulin resistance model.
+
+
+File: FEACode.m
+
+This file is used to perform flux enrichment analysis for the results from Flux span ratio analysis. 
 
 Inputs: 
-	•	 S - The (m x n) stoichiometric matrix for the n reactions between m compounds obtained from the reactions.txt file that represents the thermodynamic constraints for the available data 
-	•	 y - vector of consisting of all measured reaction and formation Gibbs energies.
-	•	index_rm -  indices of the "n" reaction Gibbs energies corresponding to the columns of S that are measured
-	•	index_fm -  indices of the "m" formation Gibbs energies corresponding to the rows of S that are measured
+	•	 T- reaction names table
+	•    model: iMAT_model_PCOSIR_30n70_minmax model(default)
 
 Outputs:
-	•	Recon_var= A vector of dimensions (m+n) x 1 representing the reconciled estimates. When the estimate is not available, the corresponding value is "NaN"
-	•	index_unobservable= indices from the range 1:(m+n) that represent the unobservable Gibbs energies. 
+    •    resultCell : consists of adjusted P values, reaction subsystems, total set size(number of total reactions), enriched set(total number of differentially expressed reactions) for the input reaction list excel file.
 
-File: Groupcontributions.m
 
-This file is used to perform the modified group contribution method. By using all the available measured data, the thermodynamic constraints between them, estimates are obtained for all the group contributions using the constrained optimisation function fmincon. 
 
-Inputs:
+File: Recon3DModel_301.m
 
-	•	A -  the reduced constraint matrix representing the thermodynamic constraints between the measured variables (obtained from the QR decomposition of S)
-	•	G_r - measured reaction Gibbs energies
-	•	G_f - measured formation Gibbs energies
-	•	G - the group decomposition matrix
-	•	index_fest - the indices of the unmeasured formation energies
-
-File: costFunction.m
-The optimisation function for fmincon in the group contribution method
-
-Inputs:
-
-	•	x - vector consisting of reconciled estimates of reaction, formation Gibbs energies and group contributions.
-	•	b - vector consisting of measured reaction Gibbs energies
-	•	Gf_m - vector consisting of measured formation Gibbs energies
-	•	G_m - group decomposition matrix for the measured formation Gibbs energies
-
-Outputs:
-
-	•	J - The average sum squared error between measurements and estimates
+This file has information on 4,140 metabolites, 13,543 Reactions of 3,288 genes. This is used to build models in 'PCOSmodel1_control.m'
 
 
 
